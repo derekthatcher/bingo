@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bingo</title>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&subset=latin,latin-ext" rel="stylesheet">
+    <style>
+        body {
+          text-align: center;
+          margin: 30px 0;
+          font-family: 'IBM Plex Sans', sans-serif;
+        }
+    
+        .active {
+          background-color: #ff00007d;
+        }
+    
+        table td {
+          border: #3333333b 1px solid;
+          background-color: #acacac1f;
+          width: 20vw;
+          height: 18vh;
+          vertical-align: middle;
+          text-align: center;
+        }
+      </style>
+</head>
+
+<body>
+    <h1>Custom Bingo</h1>
+    <textarea id="wordListInput" rows="5" cols="50"
+        placeholder="Enter words, separated by commas or newlines"></textarea><br>
+    <button id="generateButton">Generate Bingo</button>
+    <p id="shareableUrl"></p>
+    <table id="grid">
+
+    </table>
+    When you get five in a line yell out "BINGO!"
+
+    <script>
+        document.getElementById('generateButton').addEventListener('click', generateBingo);
+
+        function generateBingo() {
+            const wordListText = document.getElementById('wordListInput').value;
+            const words = parseWordList(wordListText);
+
+            if (words.length < 25) {
+                alert("Please enter at least 25 words.");
+                return;
+            }
+
+            generateBingoBoard(words);
+            generateShareableUrl(words);
+        }
+
+        function parseWordList(text) {
+            return text.split(/[\n,]+/).map(word => word.trim()).filter(word => word !== '');
+        }
+
+        function generateBingoBoard(words) {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = ''; // Clear previous board
+
+            // Shuffle words for random placement
+            const shuffledWords = words.sort(() => 0.5 - Math.random());
+            const boardWords = shuffledWords.slice(0, 25);
+
+            for (let i = 0; i < 5; i++) {
+                const row = document.createElement('tr');
+                grid.appendChild(row);
+                for (let j = 0; j < 5; j++) {
+                    const cell = document.createElement('td');
+                    cell.textContent = boardWords[i + j];
+                    row.appendChild(cell);
+                    // Add event listener to toggle "active" class
+                    cell.addEventListener('click', function () {
+                        this.classList.toggle('active');
+                    });
+                }
+            }
+        }
+
+        function generateShareableUrl(words) {
+            const encodedWords = encodeURIComponent(JSON.stringify(words));
+            const baseUrl = window.location.href.split('?')[0]; // Remove existing query parameters
+            const shareableUrl = `${baseUrl}?words=${encodedWords}`;
+
+            document.getElementById('shareableUrl').textContent = shareableUrl;
+        }
+
+        // Handle URL parameters on page load
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedWords = urlParams.get('words');
+
+            if (encodedWords) {
+                try {
+                    const words = JSON.parse(decodeURIComponent(encodedWords));
+                    generateBingoBoard(words);
+                } catch (error) {
+                    console.error("Invalid URL parameters:", error);
+                    alert("Invalid URL parameters.");
+                }
+            }
+        };
+    </script>
+</body>
+
+</html>
