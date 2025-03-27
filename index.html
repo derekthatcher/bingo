@@ -19,13 +19,14 @@
     }
 
     .reo {
-    color: #C61D23;
-    font-weight: 100;
-}
-.bar {
-    color: #AAA;
-    font-weight: 100;
-}
+      color: #C61D23;
+      font-weight: 100;
+    }
+
+    .bar {
+      color: #AAA;
+      font-weight: 100;
+    }
 
     table td {
       border: #3333333b 1px solid;
@@ -35,20 +36,24 @@
       vertical-align: middle;
       text-align: center;
     }
+
     @media print {
-    #wordListInput,
-    #generateButton,
-    #copyButton,
-    #shareableUrl {
+
+      #wordListInput,
+      #generateButton,
+      #copyButton,
+      #shareableUrl {
         display: none;
-    }
-    body{
+      }
+
+      body {
         margin: 0;
-    }
-    table{
+      }
+
+      table {
         margin: 5mm auto;
+      }
     }
-}
   </style>
 </head>
 
@@ -58,7 +63,7 @@
   <table id="grid">
 
   </table>
-  When you get five in a line yell out <span class="reo">Wharewhare</span> <span class="bar">or</span> Bingo<br/>
+  When you get five in a line yell out <span class="reo">Wharewhare</span> <span class="bar">or</span> Bingo<br />
   <textarea id="wordListInput" rows="5" cols="100"
     placeholder="Enter words, separated by commas or newlines"></textarea><br>
   <button id="generateButton">Generate Bingo</button>
@@ -75,9 +80,18 @@
         alert("Please enter at least 25 words.");
         return;
       }
+      localStorage.setItem('bingoWords', JSON.stringify(words)); // Save to local storage
 
       generateBingoBoard(words);
       generateShortenedUrl(words);
+    }
+
+    function loadWordsFromLocalStorage() {
+      const storedWords = localStorage.getItem('bingoWords');
+      if (storedWords) {
+        return JSON.parse(storedWords);
+      }
+      return null;
     }
 
     function generateShortenedUrl(words) {
@@ -96,18 +110,18 @@
       const grid = document.getElementById('grid');
       grid.innerHTML = ''; // Clear previous board
 
-    // Shuffle the words using the Fisher-Yates shuffle algorithm
-    const shuffledWords = shuffleArray(words);
+      // Shuffle the words using the Fisher-Yates shuffle algorithm
+      const shuffledWords = shuffleArray(words);
       console.log(shuffledWords);
-    // Take the first 25 words for the bingo board
-    const boardWords = shuffledWords.slice(0, 25);
-    console.log(boardWords);
+      // Take the first 25 words for the bingo board
+      const boardWords = shuffledWords.slice(0, 25);
+      console.log(boardWords);
       for (let i = 0; i < 5; i++) {
         const row = document.createElement('tr');
         grid.appendChild(row);
         for (let j = 0; j < 5; j++) {
           const cell = document.createElement('td');
-          cell.textContent = boardWords[5*i + j];
+          cell.textContent = boardWords[5 * i + j];
           row.appendChild(cell);
           // Add event listener to toggle "active" class
           cell.addEventListener('click', function () {
@@ -121,6 +135,7 @@
     window.onload = function () {
       const urlParams = new URLSearchParams(window.location.search);
       const encodedWords = urlParams.get('data');
+      const storedWords = loadWordsFromLocalStorage();
 
       if (encodedWords) {
         try {
@@ -128,51 +143,54 @@
           generateBingoBoard(words);
         } catch (error) {
           console.error("Invalid URL parameters:", error);
-          alert("Invalid URL parameters.");
+          console.log("Invalid URL parameters.");
         }
+      } else if (storedWords) {
+        generateBingoBoard(storedWords);
+        document.getElementById('wordListInput').value = storedWords.join(', '); // Populate textarea
       }
     };
 
     // Fisher-Yates shuffle algorithm
-function shuffleArray(array) {
-    const newArray = [...array]; // Create a copy to avoid modifying the original array
-    for (let i = newArray.length - 1; i > 0; i--) {
+    function shuffleArray(array) {
+      const newArray = [...array]; // Create a copy to avoid modifying the original array
+      for (let i = newArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // Swap elements
+      }
+      return newArray;
     }
-    return newArray;
-}
 
-document.getElementById('copyButton').addEventListener('click', copyToClipboard);
+    document.getElementById('copyButton').addEventListener('click', copyToClipboard);
 
-function copyToClipboard() {
-    const urlText = document.getElementById('shareableUrl').textContent;
+    function copyToClipboard() {
+      const urlText = document.getElementById('shareableUrl').textContent;
 
-    if (navigator.clipboard) {
+      if (navigator.clipboard) {
         navigator.clipboard.writeText(urlText)
-            .then(() => {
-                alert("URL copied to clipboard!");
-            })
-            .catch(err => {
-                console.error('Could not copy text: ', err);
-                alert("Failed to copy URL.");
-            });
-    } else {
+          .then(() => {
+            alert("URL copied to clipboard!");
+          })
+          .catch(err => {
+            console.error('Could not copy text: ', err);
+            alert("Failed to copy URL.");
+          });
+      } else {
         // Fallback for older browsers (less reliable)
         const textArea = document.createElement("textarea");
         textArea.value = urlText;
         document.body.appendChild(textArea);
         textArea.select();
         try {
-            document.execCommand('copy');
-            alert("URL copied to clipboard!");
+          document.execCommand('copy');
+          alert("URL copied to clipboard!");
         } catch (err) {
-            console.error('Could not copy text: ', err);
-            alert("Failed to copy URL.");
+          console.error('Could not copy text: ', err);
+          alert("Failed to copy URL.");
         }
         document.body.removeChild(textArea);
+      }
     }
-}
   </script>
 </body>
 
