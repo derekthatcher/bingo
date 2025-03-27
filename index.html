@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Bingo</title>
+  <title>Wharewhare | Bingo</title>
   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,6 +17,15 @@
     .active {
       background-color: #ff00007d;
     }
+
+    .reo {
+    color: #C61D23;
+    font-weight: 100;
+}
+.bar {
+    color: #AAA;
+    font-weight: 100;
+}
 
     table td {
       border: #3333333b 1px solid;
@@ -44,13 +53,13 @@
 </head>
 
 <body>
-  <h1>Custom Bingo</h1>
+  <h1><span class="reo">Wharewhare</span> <span class="bar"></span>|</span> Bingo</h1>
 
   <table id="grid">
 
   </table>
-  When you get five in a line yell out "BINGO!"<br/>
-  <textarea id="wordListInput" rows="5" cols="50"
+  When you get five in a line yell out <span class="reo">Wharewhare</span> <span class="bar"></span>or</span> Bingo<br/>
+  <textarea id="wordListInput" rows="5" cols="100"
     placeholder="Enter words, separated by commas or newlines"></textarea><br>
   <button id="generateButton">Generate Bingo</button>
   <p id="shareableUrl"></p>
