@@ -37,6 +37,11 @@
       text-align: center;
     }
 
+    #qrcode {
+      margin: 0 auto;
+    width: 128px;
+    }
+
     @media print {
 
       #wordListInput,
@@ -55,6 +60,7 @@
       }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 </head>
 
 <body>
@@ -69,6 +75,7 @@
   <button id="generateButton">Generate Bingo</button>
   <p id="shareableUrl"></p>
   <button id="copyButton">Copy URL</button>
+  <div id="qrcode"></div>
   <script>
     document.getElementById('generateButton').addEventListener('click', generateBingo);
 
@@ -100,6 +107,12 @@
       const shortenedUrl = `${baseUrl}?data=${encodedWords}`;
 
       document.getElementById('shareableUrl').textContent = shortenedUrl;
+      // Generate QR code
+      new QRCode(document.getElementById("qrcode"), {
+        text: shortenedUrl,
+        width: 128,
+        height: 128,
+      });
     }
 
     function parseWordList(text) {
