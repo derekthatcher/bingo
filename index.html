@@ -87,16 +87,18 @@
       const grid = document.getElementById('grid');
       grid.innerHTML = ''; // Clear previous board
 
-      // Shuffle words for random placement
-      const shuffledWords = words.sort(() => 0.5 - Math.random());
-      const boardWords = shuffledWords.slice(0, 25);
-
+    // Shuffle the words using the Fisher-Yates shuffle algorithm
+    const shuffledWords = shuffleArray(words);
+      console.log(shuffledWords);
+    // Take the first 25 words for the bingo board
+    const boardWords = shuffledWords.slice(0, 25);
+    console.log(boardWords);
       for (let i = 0; i < 5; i++) {
         const row = document.createElement('tr');
         grid.appendChild(row);
         for (let j = 0; j < 5; j++) {
           const cell = document.createElement('td');
-          cell.textContent = boardWords[i + j];
+          cell.textContent = boardWords[5*i + j];
           row.appendChild(cell);
           // Add event listener to toggle "active" class
           cell.addEventListener('click', function () {
@@ -121,7 +123,16 @@
         }
       }
     };
-    // ... (rest of your JavaScript code) ...
+
+    // Fisher-Yates shuffle algorithm
+function shuffleArray(array) {
+    const newArray = [...array]; // Create a copy to avoid modifying the original array
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // Swap elements
+    }
+    return newArray;
+}
 
 document.getElementById('copyButton').addEventListener('click', copyToClipboard);
 
