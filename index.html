@@ -22,10 +22,24 @@
       border: #3333333b 1px solid;
       background-color: #acacac1f;
       width: 20vw;
-      height: 18vh;
+      height: 15vh;
       vertical-align: middle;
       text-align: center;
     }
+    @media print {
+    #wordListInput,
+    #generateButton,
+    #copyButton,
+    #shareableUrl {
+        display: none;
+    }
+    body{
+        margin: 0;
+    }
+    table{
+        margin: 5mm auto;
+    }
+}
   </style>
 </head>
 
